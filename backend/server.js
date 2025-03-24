@@ -2,8 +2,13 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 
+async function query(sql, params) {
+  const [result] = await pool.execute(sql, params);
+  return result;
+}
+
 const app = express();
-const port = 4000;
+const port = 3000;
 
 // Middleware
 app.use(cors());
@@ -43,7 +48,7 @@ app.post("/users", async (req, res) => {
   console.log("users", user);
   console.log("account", account);
 
-  res.send("user created");
+  res.json({ message: "User created", userId: userId });
 });
 
 function getUser(username, password) {
@@ -67,7 +72,7 @@ app.post("/login", async (req, res) => {
 
     res.json(session);
   } else {
-    res.send("Login faild");
+    res.status(400).send("Login failed");
   }
 });
 
